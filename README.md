@@ -42,7 +42,7 @@ Returning to the racing frame allowed for much tighter PID tuning. This stage in
 ### Build Process
 | Pixhawk 2.4.8 Setup | Racerstar 2300KV Motor | Internal Wiring |
 | :---: | :---: | :---: |
-| ![Pixhawk](./media/photos/pixhawk_board.jpg) | ![Motor](./media/photos/motor_close_up.jpg) | ![Wiring](./media/photos/wiring_setup.jpg) |
+| ![Pixhawk](pixhawk_connections.jpg.jpg) | ![Motor](motor_racerstar_2205.jpg.jpg) | ![Wiring](pdb_wiring_detail.jpg.jpeg) |
 
 ### Testing & Results
 * **Stability Tests:** Achieving stable hover before moving to manual/acro modes.
