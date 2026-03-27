@@ -10,14 +10,20 @@ After experimenting with a larger **F450 frame** (plastic/nylon arms), I decided
 
 ---
 
-## 🛠️ Hardware Specifications
+## 🛠️ Bill of Materials (Hardware)
 
-* **Flight Controller:** Pixhawk 2.4.8 (PX4/ArduPilot compatible).
-* **Motors:** Racerstar BR2205 2300KV Brushless.
-* **PDB (Power Distribution Board):** Matek PDB-XT60 with integrated current sensor.
-* **Frame 1 (Current):** 5-inch Carbon Fiber Racing Frame (3mm/4mm arms).
-* **Frame 2 (Experimental):** F450 Flame Wheel style (Red/White arms) - *Currently decommissioned*.
-* **Configuration Software:** Mission Planner / QGroundControl / MultiWiiConf.
+Based on the current assembly and project components:
+
+* **Flight Controller:** Pixhawk 2.4.8 (equipped with vibration damping mount).
+* **Motors:** Racerstar BR2205 2300KV Brushless Motors.
+* **ESCs:** 30A Brushless Electronic Speed Controllers (Yellow Heatshrink).
+* **Power Distribution Board (PDB):** Matek PDB-XT60 with integrated current sensor and dual BEC (5V/12V).
+* **Frame:** 210mm-250mm Carbon Fiber Racing Frame (3mm/4mm arms).
+* **Propellers:** 5045 3-Blade High-Efficiency Propellers.
+* **Receiver:** FlySky FS-iA6B 2.4GHz 6CH Receiver.
+* **Battery:** 1550mAh 3S/4S LiPo Battery.
+* **Peripherals:** External Buzzer, Safety Switch, and GPS module (optional/external).
+* **Experimental:** Raspberry Pi 4 (included in parts box for potential companion computer integration).
 
 ---
 
