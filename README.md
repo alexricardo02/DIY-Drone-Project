@@ -1,13 +1,12 @@
 # DIY Drone Project: From Racing Frame to F450 and Back
+[![Build Status](https://img.shields.io/badge/Build-In--Progress-orange.svg)]()
+[![Hardware](https://img.shields.io/badge/FC-Pixhawk_2.4.8-blue.svg)]()
+[![Firmware](https://img.shields.io/badge/Firmware-ArduPilot_Copter-green.svg)]()
 
 This repository documents the evolution, build process, and flight testing of my custom-built quadcopter. The project has undergone several iterations, experimenting with different frames and power configurations to find the optimal balance of agility and stability.
 
 ### Current Status:
 After experimenting with a larger **F450 frame** (plastic/nylon arms), I decided to revert to the **Carbon Fiber Racing Frame**. The high-KV motors and lightweight structure proved to be a much better match for the agility I'm looking for.
-
-[![Build Status](https://img.shields.io/badge/Build-In--Progress-orange.svg)]()
-[![Hardware](https://img.shields.io/badge/FC-Pixhawk_2.4.8-blue.svg)]()
-[![Firmware](https://img.shields.io/badge/Firmware-ArduPilot_Copter-green.svg)]()
 
 A comprehensive technical documentation of a DIY drone build, evolving from a high-speed racing chassis to a utility frame and back, focusing on the integration of ArduPilot on racing-grade hardware.
 
