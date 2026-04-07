@@ -2,44 +2,94 @@
 
 This repository documents the evolution, build process, and flight testing of my custom-built quadcopter. The project has undergone several iterations, experimenting with different frames and power configurations to find the optimal balance of agility and stability.
 
-## 🚀 Project Overview
-The primary goal is to build a versatile drone using the **Pixhawk 2.4.8** flight controller. 
-
 ### Current Status:
 After experimenting with a larger **F450 frame** (plastic/nylon arms), I decided to revert to the **Carbon Fiber Racing Frame**. The high-KV motors and lightweight structure proved to be a much better match for the agility I'm looking for.
 
----
+[![Build Status](https://img.shields.io/badge/Build-In--Progress-orange.svg)]()
+[![Hardware](https://img.shields.io/badge/FC-Pixhawk_2.4.8-blue.svg)]()
+[![Firmware](https://img.shields.io/badge/Firmware-ArduPilot_Copter-green.svg)]()
 
-## 🛠️ Bill of Materials (Hardware)
-
-Based on the current assembly and project components:
-
-* **Flight Controller:** Pixhawk 2.4.8 (equipped with vibration damping mount).
-* **Motors:** Racerstar BR2205 2300KV Brushless Motors.
-* **ESCs:** 30A Brushless Electronic Speed Controllers (Yellow Heatshrink).
-* **Power Distribution Board (PDB):** Matek PDB-XT60 with integrated current sensor and dual BEC (5V/12V).
-* **Frame:** 210mm-250mm Carbon Fiber Racing Frame (3mm/4mm arms).
-* **Propellers:** 5045 3-Blade High-Efficiency Propellers.
-* **Receiver:** FlySky FS-iA6B 2.4GHz 6CH Receiver.
-* **Battery:** 1550mAh 3S/4S LiPo Battery.
-* **Peripherals:** External Buzzer, Safety Switch, and GPS module (optional/external).
-* **Experimental:** Raspberry Pi 4 (included in parts box for potential companion computer integration).
+A comprehensive technical documentation of a DIY drone build, evolving from a high-speed racing chassis to a utility frame and back, focusing on the integration of ArduPilot on racing-grade hardware.
 
 ---
 
-## 📈 Design Evolution
+## 📖 Table of Contents
+1. [Project Vision](#-project-vision)
+2. [Technical Specifications](#-technical-specifications)
+3. [Design Evolution & Iterations](#-design-evolution--iterations)
+4. [The Troubleshooting Chronicles](#-the-troubleshooting-chronicles)
+5. [Software & Parameter Configuration](#-software--parameter-configuration)
+6. [Media Gallery](#-media-gallery)
+7. [Future Roadmap](#-future-roadmap)
 
-### Phase 1: Initial Build (Racing Frame)
-The project started with a focus on speed. I integrated the Pixhawk onto a lightweight carbon fiber chassis. Early sensor testing was conducted using IMU visualization tools to ensure proper accelerometer and gyro calibration.
+---
 
-### Phase 2: The F450 Experiment
-I attempted to migrate the electronics to a larger F450 frame to gain more mounting space and stability. However, the 2300KV motors were too high-revving for the large propellers typically used on this frame, leading to poor efficiency and vibrations.
+## 🎯 Project Vision
+The core objective of this project is to bridge the gap between **Racing Hardware** (High-KV motors, 4-in-1 ESCs) and **Professional Flight Controllers** (Pixhawk 2.4.8). This project documents the challenges of signal logic level conversion, frame resonance, and advanced ArduPilot parameter tuning.
 
-### Phase 3: Refinement & Flight Testing
-Returning to the racing frame allowed for much tighter PID tuning. This stage involved:
-* Static thrust tests and ESC calibration.
-* Real-time telemetry monitoring via MultiWiiConf.
-* Field testing, including high-speed maneuvers and safety failsafe checks.
+---
+
+## 🛠 Technical Specifications
+
+### Core Flight Stack
+| Component | Model | Key Specs |
+| :--- | :--- | :--- |
+| **Flight Controller** | Pixhawk 2.4.8 | 32-bit STM32F427, ArduCopter Firmware |
+| **Motors** | Racerstar BR2205 | 2300KV, 3S-4S Support |
+| **ESC** | JHEMCU EM40A 4-in-1 | 40A Continuous, BLHeli_S, DShot600 |
+| **PDB** | Matek PDB-XT60 | Dual BEC (5V/12V), XT60 Integrated |
+| **Receiver** | FlySky FS-iA6 / iA6B | 2.4GHz AFHDS 2A |
+| **Frame** | Carbon Fiber Racing | 210mm Wheelbase, 4mm Arms |
+
+### Propulsion System
+* **Propellers:** 5045 3-Blade High-Efficiency Props.
+* **Battery:** 1550mAh 3S/4S LiPo.
+* **Thrust-to-Weight Ratio:** Estimated 4.5:1 on 4S.
+
+---
+
+## 📈 Design Evolution & Iterations
+
+### Iteration 1: The Racing Foundation
+Initial assembly on a carbon fiber racing frame. Focus on minimizing weight and centralizing the Pixhawk's mass on a vibration-damped mount.
+
+### Iteration 2: The F450 "Big Frame" Experiment
+Attempted to migrate electronics to a plastic/nylon F450 frame.
+* **The Failure:** 2300KV motors were inefficient with the larger propellers required for this frame.
+* **Result:** Reverted to the original Carbon Fiber chassis for optimal agility and motor matching.
+
+---
+
+## 🔍 The Troubleshooting Chronicles
+*A detailed log of hardware and software hurdles encountered during the bench-testing phase.*
+
+### 1. The ESC Signal Voltage Gap (3.3V vs 5V)
+* **The Problem:** JHEMCU EM40A ESCs (BLHeli_S) often require a 5V logic signal, whereas Pixhawk 2.4.8 outputs 3.3V signal pulses.
+* **Symptom:** Motors beeped but refused to spin even when the safety switch was armed.
+* **Diagnosis:** Multimeter testing confirmed a signal pulse of ~1.52V, which was insufficient to "wake up" the modern ESC processors.
+* **Solution:** Used a "Bypass Test" by connecting the ESC signal wire directly to the receiver's Channel 3 to confirm hardware functionality.
+
+### 2. Radio Failsafe & Calibration Issues
+* **The Problem:** Mission Planner showed a constant "Radio Failsafe" with Throttle stuck at 900-901.
+* **Diagnosis:** Incorrect pinout on the FS-iA6 receiver. The signal wire was physically connected to the receiver instead of passing through the Pixhawk RC input during calibration tests.
+* **Solution:** Standardized the PPM/i-Bus connection and adjusted `FS_THR_VALUE` below 950 to prevent pre-arm triggers.
+
+### 3. The "Compass 3 Not Found" Bug
+* **The Problem:** ArduPilot firmware searching for a non-existent third internal compass.
+* **Solution:** Disabled `COMPASS_USE3` in the Full Parameter List to clear the Pre-Arm safety check.
+
+---
+
+## ⚙ Software & Parameter Configuration
+Key ArduPilot parameters optimized for this racing build:
+
+| Parameter | Value | Description |
+| :--- | :--- | :--- |
+| `MOT_PWM_TYPE` | 0 (Normal) | Forced to PWM due to Pixhawk 2.4.8 MAIN port limitations. |
+| `BRD_SAFETYENABLE` | 0 | Disabled for bench testing to bypass hardware safety button. |
+| `FRAME_CLASS` | 1 | Configured as Quadcopter. |
+| `FRAME_TYPE` | 1 | Configured as X-Frame. |
+| `MOT_SPIN_ARM` | 0.15 | Increased idle spin to overcome high-KV motor inertia. |
 
 ---
 
