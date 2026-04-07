@@ -108,3 +108,13 @@ Key ArduPilot parameters optimized for this racing build:
 ## ⚙️ Software & Tools
 * **Firmware:** ArduCopter / PX4.
 * **Diagnostics:** `MultiWiiConf` for real-time sensor visualization and orientation checks.
+
+---
+
+## 🚀 Future Roadmap
+- [ ] **Level Shifter Integration:** Install a 3.3V to 5V logic level shifter to ensure reliable ESC communication.
+- [ ] **PID Tuning:** Perform AutoTune once stable hover is achieved.
+- [ ] **Raspberry Pi Integration:** Utilize the Raspberry Pi 4 as a companion computer for MAVLink-based computer vision.
+- [ ] **GPS/Loiter Testing:** Finalize GPS mounting for autonomous flight modes.
+
+---
