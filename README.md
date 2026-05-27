@@ -28,22 +28,20 @@ The core objective of this project is to bridge the gap between **Racing Hardwar
 
 ---
 
-## 🛠 Technical Specifications
+## 🛠️ Bill of Materials (Hardware)
 
-### Core Flight Stack
-| Component | Model | Key Specs |
-| :--- | :--- | :--- |
-| **Flight Controller** | Pixhawk 2.4.8 | 32-bit STM32F427, ArduCopter Firmware |
-| **Motors** | Racerstar BR2205 | 2300KV, 3S-4S Support |
-| **ESC** | JHEMCU EM40A 4-in-1 | 40A Continuous, BLHeli_S, DShot600 |
-| **PDB** | Matek PDB-XT60 | Dual BEC (5V/12V), XT60 Integrated |
-| **Receiver** | FlySky FS-iA6 / iA6B | 2.4GHz AFHDS 2A |
-| **Frame** | Carbon Fiber Racing | 210mm Wheelbase, 4mm Arms |
+Based on the current assembly and project components:
 
-### Propulsion System
-* **Propellers:** 5045 3-Blade High-Efficiency Props.
-* **Battery:** 1550mAh 3S/4S LiPo.
-* **Thrust-to-Weight Ratio:** Estimated 4.5:1 on 4S.
+* **Flight Controller:** Pixhawk 2.4.8 (equipped with vibration damping mount) -> *Upgraded to JHEMCU F405 NOXE V2 (with Barometer)*.
+* **Motors:** Racerstar BR2205 2300KV Brushless Motors.
+* **ESCs:** JHEMCU EM40A 4-in-1 40A Brushless ESC (BLHeli_S / DShot600).
+* **Power Distribution Board (PDB):** Matek PDB-XT60 with integrated current sensor and dual BEC (5V/12V) -> *Bypassed in Phase 4 as power routing is directly managed by the JHEMCU ESC Stack*.
+* **Frame:** 210mm-250mm Carbon Fiber Racing Frame (3mm/4mm arms).
+* **Propellers:** 5045 3-Blade High-Efficiency Propellers.
+* **Receiver:** FlySky FS-iA6B 2.4GHz 6CH Receiver.
+* **Battery:** 1550mAh 3S/4S LiPo Battery.
+* **Peripherals:** External Buzzer, Safety Switch (Legacy), and GPS module with integrated Compass.
+* **Experimental:** Raspberry Pi 4 (included in parts box for potential companion computer integration).
 
 ---
 
