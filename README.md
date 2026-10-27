@@ -315,23 +315,6 @@ Recruiter-grade embedded engineering relies on systematic debugging from physica
 
 ---
 
-### 4. Control Loop Dynamics: I-Term Windup & Dynamic Ground Reaction
-
-[![Flight Test - Ground Roll & Takeoff Dynamics](https://img.youtube.com/vi/vP5DfJgvse4/hqdefault.jpg)](https://youtu.be/vP5DfJgvse4)
-
-*Technical Demonstration: Field flight test capturing initial takeoff dynamics, ground roll behavior, PID I-Term windup prior to liftoff, and mechanical prop-nut slippage diagnosis on Motor 2.*
-
-- **The Incident:** During the initial untethered hover flight test (captured in the flight test video above), the drone rolled violently to the right and flipped upon breaking ground contact.
-- **Diagnostic Root Cause Analysis:**
-  1. **Mechanical Propeller Slip:** Post-incident mechanical inspection showed the M5 nylon locknut on Motor 2 was under-torqued. Under rapid motor acceleration, the motor shaft spun freely inside the propeller hub, resulting in insufficient thrust generation along the front-right arm.
-  2. **PID I-Term Windup:** As the airframe began to list to the right while still in contact with the ground, Betaflight's attitude controller sensed an uncommanded error in `ANGLE` mode. Because the airframe was mechanically constrained by ground friction, the error could not be immediately corrected. The integral controller accumulated error ($I = K_i \int e(t) dt$), driving the control loop into saturation. When the drone finally lifted off, this stored energy released violently, flipping the craft.
-- **Engineering Countermeasures:**
-  - Standardized M5 propeller nut torque to **1.8 Nm** using flanged locknuts.
-  - Activated Betaflight's anti-windup algorithm: `set iterm_relax = RP` and `set iterm_relax_cutoff = 15`.
-  - Established a flight protocol of applying a **decisive, positive throttle pop** during takeoff to clear ground effect immediately before closed-loop integral corrections engage.
-
----
-
 ## 6. Safety Architecture & Bench Verification
 
 High-current lithium-polymer systems present severe fire and electrical hazards during embedded firmware bring-up. A multi-layered hardware and firmware safety workflow was strictly enforced:
@@ -393,14 +376,14 @@ The system confirmed that all critical hardware interlocks were active:
 
 Empirical flight trials and bench dynamic testing logs serve as the primary validation criteria for this avionics architecture. The table below presents the official demonstration records:
 
-| Ground Propulsion Verification | Takeoff Dynamics & Incident Log |
+| Ground Propulsion Verification | Takeoff Dynamics & Incident Log (old setup)|
 | :---: | :---: |
 | [![Bench & Ground Motor Verification Test](https://img.youtube.com/vi/zK9mnMgcCWE/hqdefault.jpg)](https://youtu.be/zK9mnMgcCWE) | [![Flight Test - Ground Roll & Takeoff Dynamics](https://img.youtube.com/vi/vP5DfJgvse4/hqdefault.jpg)](https://youtu.be/vP5DfJgvse4) |
 | *Props-In rotation, idle throttle check, and FC arming response.* | *Initial liftoff test diagnosing I-Term windup and prop nut torque.* |
 
 ### Detailed Flight Log & Test Breakdown
 
-#### 1. Bench & Ground Motor Verification Test (`zK9mnMgcCWE`)
+#### 1. Bench & Ground Motor Verification Test
 - **Primary Objective:** Validate the physical 210mm carbon airframe assembly, ESC-FC digital synchronization, arming safety state machine, and motor rotational directions.
 - **Engineering Observations:**
   - Flight controller cleanly armed with `AUX1` toggle with zero persistent pre-arm safety inhibits.
@@ -408,7 +391,7 @@ Empirical flight trials and bench dynamic testing logs serve as the primary vali
   - Actuator rotation matched the configured Props-In standard (M1/M4 CCW, M2/M3 CW), ensuring propeller wash deflects outward away from the FPV optical lens.
   - Unloaded motor acceleration confirmed prompt DSHOT300 digital bus response without frame loss or ESC desynchronization.
 
-#### 2. Maiden Flight / Ground Roll Incident Test (`vP5DfJgvse4`)
+#### 2. Maiden Flight / Ground Roll Incident Test (old steup)
 - **Primary Objective:** Assess first untethered liftoff dynamics, hover stability in Angle mode, and dynamic ground-effect transition.
 - **Root-Cause Incident Diagnosis:**
   - **Asymmetric Thrust Inception:** Insufficient mechanical clamping torque on the Motor 2 M5 nylon locknut permitted rotational slippage between the motor shaft and propeller hub under aerodynamic load.
@@ -422,17 +405,17 @@ Empirical flight trials and bench dynamic testing logs serve as the primary vali
 
 ### Hardware Integration & Subsystem Disassembly
 
-| Core Avionics & Electronics Breakdown | Bare 210mm Carbon Fiber Airframe |
+| Old parts with RPI 4, new frame and props | Bare 210mm Carbon Fiber Airframe |
 | :---: | :---: |
 | ![Drone Elements](drone_elements.jpeg) | ![Carbon Frame Empty](carbon_frame_empty.jpg.jpeg) |
 | *Discrete avionics prior to final harness assembly* | *Rigid 3K carbon unibody frame plate* |
 
-| Racerstar BR2205 Brushless Outrunner | Internal Harnessing & Micro-Soldering |
+| Damaged Racerstar BR2205 Brushless Outrunner | Old Internal Harnessing & Micro-Soldering |
 | :---: | :---: |
 | ![Motor Detail](motor_racerstar_2205.jpg.jpg) | ![Wiring Detail](wiring.jpeg) |
 | *12N14P high-speed stator windings* | *Low-resistance silicon wiring and joint inspection* |
 
-| Completed Flight-Ready 210mm Build | Power Distribution & ESC Stacking |
+| Completed Flight-Ready 210mm Build | Power Distribution & ESC Stacking with Pixhawk|
 | :---: | :---: |
 | ![Completed Drone](IMG-20260321-WA0026.jpeg) | ![PDB Wiring](pdb_wiring_detail.jpg.jpeg) |
 | *Assembled platform ready for flight line* | *Compact ESC-FC high-current distribution stack* |
@@ -458,7 +441,5 @@ The platform's modular avionics stack establishes a solid foundation for advance
 
 ## Author & Engineering Contact
 
-**Alex Ricardo**  
-*Embedded Systems, Robotics & Avionics Engineer*  
-- **Repository:** [alexricardo02/diy-drone-project](https://github.com/alexricardo02/diy-drone-project)  
-- **Specializations:** Bare-Metal Firmware (C/C++), Sensor Fusion, Real-Time Operating Systems (RTOS), Flight Dynamics & Embedded Diagnostics.
+**Alex Brinckmann**  
+*CS Student and robotics* 
