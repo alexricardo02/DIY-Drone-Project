@@ -10,7 +10,7 @@
 [![Airframe](https://img.shields.io/badge/Airframe-210mm_3K_Carbon_Fiber-lightgrey.svg)]()
 [![Bench Safety](https://img.shields.io/badge/Bench_Safety-VIFLY_ShortSaver_2-success.svg)]()
 
-> **Engineering Portfolio Showcase:** A custom-engineered, analog FPV racing quadcopter built from discrete embedded avionics, high-rate digital motor telemetry, and deterministic real-time control loops. This repository documents the mechanical evolution, firmware provisioning, diagnostic methodologies, and root-cause failure analysis conducted throughout the platform's development lifecycle.
+> **Engineering Portfolio Showcase:** A custom-engineered, analog FPV quadcopter built from discrete embedded avionics, high-rate digital motor telemetry, and deterministic real-time control loops. This repository documents the mechanical evolution, firmware provisioning, diagnostic methodologies, and root-cause failure analysis conducted throughout the platform's development lifecycle.
 
 ---
 
@@ -41,7 +41,7 @@
 
 ## 1. Executive Summary & Core Features
 
-This project showcases the end-to-end design, embedded hardware-software integration, and flight-dynamics optimization of an acrobatic quadcopter. Transitioning away from legacy autonomous autopilot architectures (Pixhawk 2.4.8 / ArduPilot on flexible utility frames), the platform was re-architected onto a high-stiffness **210mm 3K Carbon Fiber Airframe** driven by an **STM32F405 Flight Controller** running **Betaflight 2026.6.1**.
+This project showcases the end-to-end design, embedded hardware-software integration, and flight-dynamics optimization of a quadcopter. Transitioning away from legacy autonomous autopilot architectures (Pixhawk 2.4.8 / ArduPilot on flexible utility frames), the platform was re-architected onto a high-stiffness **210mm 3K Carbon Fiber Airframe** driven by an **STM32F405 Flight Controller** running **Betaflight 2026.6.1**.
 
 ```
 +-------------------------------------------------------------------------------------------------+
