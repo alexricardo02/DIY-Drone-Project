@@ -30,8 +30,12 @@
    - [3. IMU Alignment & Quantitative Gyro RMS Noise Characterization](#3-imu-alignment--quantitative-gyro-rms-noise-characterization)
    - [4. Control Loop Dynamics: I-Term Windup & Dynamic Ground Reaction](#4-control-loop-dynamics-i-term-windup--dynamic-ground-reaction)
 6. [Safety Architecture & Bench Verification](#6-safety-architecture--bench-verification)
-7. [Engineering Media Gallery & Test Artifacts](#7-engineering-media-gallery--test-artifacts)
-8. [Future Engineering Roadmap](#8-future-engineering-roadmap)
+   - [1. Solid-State Electronic Fuse (VIFLY ShortSaver 2)](#1-solid-state-electronic-fuse-vifly-shortsaver-2)
+   - [2. Pre-Arming Safety Flags & MSP Audit](#2-pre-arming-safety-flags--msp-audit)
+   - [3. Bench & Ground Propulsion Verification](#3-bench--ground-propulsion-verification)
+7. [Flight Testing & Video Logs](#flight-testing--video-logs)
+8. [Media & Demonstration](#media--demonstration)
+9. [Future Engineering Roadmap](#future-engineering-roadmap)
 
 ---
 
@@ -313,7 +317,11 @@ Recruiter-grade embedded engineering relies on systematic debugging from physica
 
 ### 4. Control Loop Dynamics: I-Term Windup & Dynamic Ground Reaction
 
-- **The Incident:** During the initial untethered hover flight test (`flight_test_crash.mp4.mp4`), the drone rolled violently to the right and flipped upon breaking ground contact.
+[![Flight Test - Ground Roll & Takeoff Dynamics](https://img.youtube.com/vi/vP5DfJgvse4/hqdefault.jpg)](https://youtu.be/vP5DfJgvse4)
+
+*Technical Demonstration: Field flight test capturing initial takeoff dynamics, ground roll behavior, PID I-Term windup prior to liftoff, and mechanical prop-nut slippage diagnosis on Motor 2.*
+
+- **The Incident:** During the initial untethered hover flight test (captured in the flight test video above), the drone rolled violently to the right and flipped upon breaking ground contact.
 - **Diagnostic Root Cause Analysis:**
   1. **Mechanical Propeller Slip:** Post-incident mechanical inspection showed the M5 nylon locknut on Motor 2 was under-torqued. Under rapid motor acceleration, the motor shaft spun freely inside the propeller hub, resulting in insufficient thrust generation along the front-right arm.
   2. **PID I-Term Windup:** As the airframe began to list to the right while still in contact with the ground, Betaflight's attitude controller sensed an uncommanded error in `ANGLE` mode. Because the airframe was mechanically constrained by ground friction, the error could not be immediately corrected. The integral controller accumulated error ($I = K_i \int e(t) dt$), driving the control loop into saturation. When the drone finally lifted off, this stored energy released violently, flipping the craft.
@@ -368,12 +376,49 @@ The system confirmed that all critical hardware interlocks were active:
 - `ARMING_DISABLED_RXLOSS`: Blocks arming if the radio link is unconfirmed.
 - `ARMING_DISABLED_CLI`: Prevents arming while an active serial debug session is open.
 
-### 3. Propeller-Off Bench Testing Protocol
-Bench motor spins, DSHOT direction checks, and failsafe cutoffs were conducted exclusively with **all propellers physically removed**, validating actuator control safely prior to airframe assembly.
+### 3. Bench & Ground Propulsion Verification
+
+[![Bench & Ground Motor Verification Test](https://img.youtube.com/vi/zK9mnMgcCWE/hqdefault.jpg)](https://youtu.be/zK9mnMgcCWE)
+
+*Technical Demonstration: Bench and ground propulsion verification showing verified 210mm carbon frame setup, quad motor synchronization at idle/low throttle, correct motor rotation directions (Props-In), and successful flight controller arming.*
+
+- **Arming Logic & Interlock Verification:** Validated arming sequence transitions commanded via transmitter `AUX1` switch. Verified that all `ARMING_DISABLED` flags clear deterministically when throttle is at zero (`1000 µs`), preventing unexpected motor runaways.
+- **DSHOT300 Actuator Response:** Validated real-time digital command frames across all 4 motor ESC lines at 300 kbaud without analog calibration drift or signal skew.
+- **Idle Throttle & Directional Consistency:** Evaluated idle stability at `dshot_idle_value = 550` (5.5% idle power). Confirmed synchronized spin-up across all 4 BR2205 motors and validated strict compliance with the **Props-In (Reverse Direction)** standard (M1/M4 CCW, M2/M3 CW).
+- **Propeller-Off Safety Protocol:** Bench motor spins, ESC signal validation, and failsafe cutoff procedures were executed with all propellers physically removed prior to ground tether tests.
 
 ---
 
-## 7. Engineering Media Gallery & Test Artifacts
+## Flight Testing & Video Logs
+
+Empirical flight trials and bench dynamic testing logs serve as the primary validation criteria for this avionics architecture. The table below presents the official demonstration records:
+
+| Ground Propulsion Verification | Takeoff Dynamics & Incident Log |
+| :---: | :---: |
+| [![Bench & Ground Motor Verification Test](https://img.youtube.com/vi/zK9mnMgcCWE/hqdefault.jpg)](https://youtu.be/zK9mnMgcCWE) | [![Flight Test - Ground Roll & Takeoff Dynamics](https://img.youtube.com/vi/vP5DfJgvse4/hqdefault.jpg)](https://youtu.be/vP5DfJgvse4) |
+| *Props-In rotation, idle throttle check, and FC arming response.* | *Initial liftoff test diagnosing I-Term windup and prop nut torque.* |
+
+### Detailed Flight Log & Test Breakdown
+
+#### 1. Bench & Ground Motor Verification Test (`zK9mnMgcCWE`)
+- **Primary Objective:** Validate the physical 210mm carbon airframe assembly, ESC-FC digital synchronization, arming safety state machine, and motor rotational directions.
+- **Engineering Observations:**
+  - Flight controller cleanly armed with `AUX1` toggle with zero persistent pre-arm safety inhibits.
+  - All four Racerstar BR2205 2300KV motors spun up in immediate unison at the 5.5% digital idle setpoint (`dshot_idle_value = 550`).
+  - Actuator rotation matched the configured Props-In standard (M1/M4 CCW, M2/M3 CW), ensuring propeller wash deflects outward away from the FPV optical lens.
+  - Unloaded motor acceleration confirmed prompt DSHOT300 digital bus response without frame loss or ESC desynchronization.
+
+#### 2. Maiden Flight / Ground Roll Incident Test (`vP5DfJgvse4`)
+- **Primary Objective:** Assess first untethered liftoff dynamics, hover stability in Angle mode, and dynamic ground-effect transition.
+- **Root-Cause Incident Diagnosis:**
+  - **Asymmetric Thrust Inception:** Insufficient mechanical clamping torque on the Motor 2 M5 nylon locknut permitted rotational slippage between the motor shaft and propeller hub under aerodynamic load.
+  - **Integral Error Accumulation:** As the craft listed rightward while grounded, the PID attitude controller observed continuous angular error without physical airframe response, accumulating maximum I-Term windup.
+  - **Ground-Effect Release Divergence:** Upon reaching sufficient thrust to sever ground contact, the saturated integral correction discharged instantly, resulting in an unrecoverable roll-over incident.
+- **Corrective Actions Applied:** Re-torqued all propeller nuts to 1.8 Nm with flanged locknuts, configured Betaflight `iterm_relax = RP` with a 15 Hz cutoff, and implemented a decisive throttle liftoff procedure to clear ground boundary effects before PID loop saturation.
+
+---
+
+## Media & Demonstration
 
 ### Hardware Integration & Subsystem Disassembly
 
@@ -399,13 +444,9 @@ Bench motor spins, DSHOT direction checks, and failsafe cutoffs were conducted e
 | ![F450 Frame Discarded](f450_frame_discarded.jpg.jpg) | ![Pixhawk Connections](pixhawk_connections.jpg.jpg) |
 | *Retired due to structural resonance & high mass* | *Initial ArduPilot architecture benchmark* |
 
-### Video Testing Logs & Failure Analysis
-- **`flight_test_crash.mp4.mp4`:** Field flight test documenting the initial hover failure. Captured the dynamics of Motor 2 propeller nut slippage combined with rapid low-throttle ground-contact I-term windup, confirming the need for anti-windup relaxation logic and higher nut torque.
-- **`imu_sensor_test.mp4.mp4`:** Real-time sensor telemetry bench validation verifying 8.1 kHz IMU tracking and orientation offset accuracy in Betaflight Configurator.
-
 ---
 
-## 8. Future Engineering Roadmap
+## Future Engineering Roadmap
 
 The platform's modular avionics stack establishes a solid foundation for advanced robotics and autonomous research:
 
