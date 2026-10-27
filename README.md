@@ -43,33 +43,7 @@
 
 This project showcases the end-to-end design, embedded hardware-software integration, and flight-dynamics optimization of a quadcopter. Transitioning away from legacy autonomous autopilot architectures (Pixhawk 2.4.8 / ArduPilot on flexible utility frames), the platform was re-architected onto a high-stiffness **210mm 3K Carbon Fiber Airframe** driven by an **STM32F405 Flight Controller** running **Betaflight 2026.6.1**.
 
-```
-+-------------------------------------------------------------------------------------------------+
-|                                     REAL-TIME AVIONICS FLOW                                     |
-+-------------------------------------------------------------------------------------------------+
-|                                                                                                 |
-|   +-----------------------+           SPI @ 8.1 kHz          +------------------------------+   |
-|   |  TDK ICM-42688-P IMU  | -------------------------------> |   STM32F405 MCU (ARM M4)     |   |
-|   +-----------------------+                                  |   - Betaflight 2026.6.1      |   |
-|                                                              |   - 8.1kHz Gyro / 8.1kHz PID |   |
-|   +-----------------------+        PPM / i-BUS (UART)        |   - Deterministic Task Sched |   |
-|   | FlySky FS-iA6/B RX    | -------------------------------> |                              |   |
-|   +-----------------------+                                  +------------------------------+   |
-|                                                                    |                 |          |
-|                                                DSHOT300 Telemetry  |                 | MAX7456  |
-|                                                (300 kbaud Digital) |                 | OSD SPI  |
-|                                                                    v                 v          |
-|                                                      +-------------------+    +-------------+   |
-|                                                      | EM40A 4-in-1 ESC  |    | Analog Cam  |   |
-|                                                      | (BLHeli_S / EFM8) |    +-------------+   |
-|                                                      +-------------------+           |          |
-|                                                                | (Phase)             v          |
-|                                                                v              +-------------+   |
-|                                                      +-------------------+    | Eachine     |   |
-|                                                      | 4x BR2205 2300KV  |    | TX800 VTX   |   |
-|                                                      +-------------------+    +-------------+   |
-+-------------------------------------------------------------------------------------------------+
-```
+![Avionics Flow](./scheme.jpeg)
 
 ### Key Engineering Attributes
 - **Deterministic Real-Time Execution:** Synchronized **8.1 kHz gyro sampling and 8.1 kHz PID loop rate** (1:1 lock) with minimal phase delay on an ARM Cortex-M4 @ 168 MHz with dedicated hardware FPU.
@@ -166,18 +140,7 @@ save
 
 The propulsion subsystem uses the digital **DSHOT300** protocol (300 kbaud un-clocked bitstream with 16-bit frames containing a 4-bit CRC). This guarantees precise motor speed setpoints immune to electrical ground noise.
 
-```
-       Front
-    M4 (CCW)   M2 (CW)
-       \       /
-        \     /
-         [ FC ]
-        /     \
-       /       \
-    M3 (CW)    M1 (CCW)
-        Rear
-  (Props-In Standard)
-```
+![Propulsion scheme](./motorscheme.jpeg)
 
 ```bash
 # Motor Signaling & Telemetry
@@ -319,26 +282,7 @@ Recruiter-grade embedded engineering relies on systematic debugging from physica
 
 High-current lithium-polymer systems present severe fire and electrical hazards during embedded firmware bring-up. A multi-layered hardware and firmware safety workflow was strictly enforced:
 
-```
-+-------------------------------------------------------------------------------------------------+
-|                                 BENCH SAFETY VERIFICATION FLOW                                  |
-+-------------------------------------------------------------------------------------------------+
-|                                                                                                 |
-|   +--------------------+       +-----------------------+       +----------------------------+   |
-|   | 3S LiPo Battery    | ----> | VIFLY ShortSaver 2    | ----> | 4-in-1 ESC & FC Stack      |   |
-|   | (11.1V - 12.6V)    |       | (E-Fuse: 1A Threshold)|       | (Propellers REMOVED)       |   |
-|   +--------------------+       +-----------------------+       +----------------------------+   |
-|                                            |                                 |                  |
-|                                            | Trip < 3ms                      | Betaflight CLI   |
-|                                            v (If Short Present)              v `status` Audit   |
-|                                  [ CUT OFF POWER ]               [ Verify Arming Flags: OK ]    |
-|                                                                              |                  |
-|                                                                              v                  |
-|                                                                  +--------------------------+   |
-|                                                                  | Controlled Motor Spin-Up |   |
-|                                                                  +--------------------------+   |
-+-------------------------------------------------------------------------------------------------+
-```
+![Safety Architecture](./safetyarchitecturescheme.jpeg)
 
 ### 1. Solid-State Electronic Fuse (VIFLY ShortSaver 2)
 All bench flashing, wiring tests, and initial power-ons utilized an in-line **VIFLY ShortSaver 2** electronic fuse set to a **1A current threshold**. The solid-state comparator interrupts power within **3 milliseconds** of detecting reverse polarity or short circuits, protecting delicate STM32 LDOs and BLHeli_S MOSFET gates against overcurrent damage.
