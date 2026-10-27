@@ -1,4 +1,4 @@
-# High-Performance 210mm FPV Racing Quadcopter
+# High-Performance 210mm FPV Quadcopter for image processing
 ### Embedded Avionics Architecture, Real-Time Digital Control & Diagnostic Portfolio
 
 [![Betaflight](https://img.shields.io/badge/Betaflight-2026.6.1-blue.svg?logo=cplusplus)](https://github.com/betaflight/betaflight)
